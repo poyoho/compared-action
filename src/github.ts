@@ -1,4 +1,5 @@
 import * as path from 'path'
+import * as fs from 'fs'
 import * as core from '@actions/core'
 import { context, getOctokit } from '@actions/github'
 import { formatComment } from './render'
@@ -35,6 +36,10 @@ async function comment(github: InstanceType<typeof GitHub>, body: string) {
   }
 }
 
+function loadJSONFile(path: string) {
+  return JSON.parse(fs.readFileSync(path, { encoding: 'utf-8' }))
+}
+
 export function render(
   oldPaths: string[],
   newPaths: string[],
@@ -46,8 +51,8 @@ export function render(
     oldPaths
       .map((oldPath, idx) => ({
         name: path.basename(oldPath).replace('.json', ''),
-        o: require(path.resolve(oldPath)) as Records,
-        n: require(path.resolve(newPaths[idx])) as Records
+        o: loadJSONFile(path.resolve(oldPath)) as Records,
+        n: loadJSONFile(path.resolve(newPaths[idx])) as Records
       }))
       .map((info) =>
         [
