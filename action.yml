@@ -7,14 +7,14 @@ branding:
 inputs:
   token:
     description: The GitHub token used to create an authenticated client
-    required: false
+    required: true
     default: ${{ github.token }}
   old-paths:
     description: old records path
-    required: false
+    required: true
   new-paths:
     description: new records path
-    required: false
+    required: true
   fields:
     description: extract fields
     required: false
