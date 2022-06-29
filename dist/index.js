@@ -8804,21 +8804,6 @@ module.exports = eval("require")("encoding");
 
 /***/ }),
 
-/***/ 875:
-/***/ ((module) => {
-
-function webpackEmptyContext(req) {
-	var e = new Error("Cannot find module '" + req + "'");
-	e.code = 'MODULE_NOT_FOUND';
-	throw e;
-}
-webpackEmptyContext.keys = () => ([]);
-webpackEmptyContext.resolve = webpackEmptyContext;
-webpackEmptyContext.id = 875;
-module.exports = webpackEmptyContext;
-
-/***/ }),
-
 /***/ 9491:
 /***/ ((module) => {
 
@@ -8957,11 +8942,6 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ }
 /******/ 
 /************************************************************************/
-/******/ /* webpack/runtime/hasOwnProperty shorthand */
-/******/ (() => {
-/******/ 	__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ })();
-/******/ 
 /******/ /* webpack/runtime/compat */
 /******/ 
 /******/ if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = new URL('.', import.meta.url).pathname.slice(import.meta.url.match(/^file:\/\/\/\w:/) ? 1 : 0, -1) + "/";
@@ -8975,6 +8955,8 @@ var __webpack_exports__ = {};
 var core = __nccwpck_require__(6953);
 // EXTERNAL MODULE: external "path"
 var external_path_ = __nccwpck_require__(1017);
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(7147);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@5.0.3/node_modules/@actions/github/lib/github.js
 var lib_github = __nccwpck_require__(1340);
 ;// CONCATENATED MODULE: ./src/render.ts
@@ -9023,6 +9005,7 @@ function formatComment(oRecord, nRecord, fields) {
 
 
 
+
 async function comment(github, body) {
     var _a, _b;
     const comment = {
@@ -9052,6 +9035,9 @@ async function comment(github, body) {
         await github.rest.issues.createComment(comment);
     }
 }
+function loadJSONFile(path) {
+    return JSON.parse(external_fs_.readFileSync(path, { encoding: 'utf-8' }));
+}
 function render(oldPaths, newPaths, fields) {
     return [
         '<!--report-->',
@@ -9059,8 +9045,8 @@ function render(oldPaths, newPaths, fields) {
         oldPaths
             .map((oldPath, idx) => ({
             name: external_path_.basename(oldPath).replace('.json', ''),
-            o: __nccwpck_require__(875)(external_path_.resolve(oldPath)),
-            n: __nccwpck_require__(875)(external_path_.resolve(newPaths[idx]))
+            o: loadJSONFile(external_path_.resolve(oldPath)),
+            n: loadJSONFile(external_path_.resolve(newPaths[idx]))
         }))
             .map((info) => [
             `\n### ${info.name}\n`,
