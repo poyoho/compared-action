@@ -8957,9 +8957,9 @@ var core = __nccwpck_require__(6953);
 var external_path_ = __nccwpck_require__(1017);
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __nccwpck_require__(7147);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@5.0.3/node_modules/@actions/github/lib/github.js
-var lib_github = __nccwpck_require__(1340);
 ;// CONCATENATED MODULE: ./src/render.ts
+
+
 const total = (record) => Object.values(record).reduce((sum, info) => (sum += info.timing), 0);
 const diffRecord = (o, n) => {
     return Object.entries(n).map(([key, val]) => {
@@ -8985,7 +8985,7 @@ const formatFields = (info, fields) => {
     }
     return res;
 };
-function formatComment(oRecord, nRecord, fields) {
+function renderRecord(oRecord, nRecord, fields) {
     const nTotalServe = total(nRecord);
     const tableHeader = ['file', ...fields, 'timing', 'diff'];
     return [
@@ -8999,10 +8999,31 @@ function formatComment(oRecord, nRecord, fields) {
         `\n</details>`
     ].join('\n');
 }
+function loadJSONFile(path) {
+    return JSON.parse(external_fs_.readFileSync(path, { encoding: 'utf-8' }));
+}
+function render(oldPaths, newPaths, fields) {
+    return [
+        '<!--report-->',
+        '## 🏆 compress report',
+        oldPaths
+            .map((oldPath, idx) => ({
+            name: external_path_.basename(oldPath).replace('.json', ''),
+            o: loadJSONFile(external_path_.resolve(oldPath)),
+            n: loadJSONFile(external_path_.resolve(newPaths[idx]))
+        }))
+            .map((info) => [
+            `\n### ${info.name}\n`,
+            renderRecord(info.o, info.n, fields),
+            '\n'
+        ].join('\n'))
+            .join('\n')
+    ].join('\n');
+}
 
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@5.0.3/node_modules/@actions/github/lib/github.js
+var lib_github = __nccwpck_require__(1340);
 ;// CONCATENATED MODULE: ./src/github.ts
-
-
 
 
 
@@ -9035,26 +9056,8 @@ async function comment(github, body) {
         await github.rest.issues.createComment(comment);
     }
 }
-function loadJSONFile(path) {
-    return JSON.parse(external_fs_.readFileSync(path, { encoding: 'utf-8' }));
-}
-function render(oldPaths, newPaths, fields) {
-    return [
-        '<!--report-->',
-        '## 🏆 compress report',
-        oldPaths
-            .map((oldPath, idx) => ({
-            name: external_path_.basename(oldPath).replace('.json', ''),
-            o: loadJSONFile(external_path_.resolve(oldPath)),
-            n: loadJSONFile(external_path_.resolve(newPaths[idx]))
-        }))
-            .map((info) => [
-            `\n### ${info.name}\n`,
-            formatComment(info.o, info.n, fields),
-            '\n'
-        ].join('\n'))
-            .join('\n')
-    ].join('\n');
+async function cache(github, oldPaths) {
+    // TODO
 }
 function getInputAsArray(name, options) {
     return core.getInput(name, options)
@@ -9072,6 +9075,7 @@ async function action() {
         throw new Error('input old-paths, new-paths should had the same length');
     }
     await comment(github, render(oldPaths, newPaths, fields));
+    await cache(github, oldPaths);
 }
 
 ;// CONCATENATED MODULE: ./src/index.ts

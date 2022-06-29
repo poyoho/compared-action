@@ -1,3 +1,6 @@
+import * as path from 'path'
+import * as fs from 'fs'
+
 export interface TimeRecord {
   timing: number
 }
@@ -50,7 +53,7 @@ const formatFields = (info: Record<string, string>, fields: string[]) => {
   return res
 }
 
-export function formatComment(
+function renderRecord(
   oRecord: Records,
   nRecord: Records,
   fields: string[]
@@ -66,5 +69,35 @@ export function formatComment(
     formatLine(tableHeader),
     formatTable(oRecord, nRecord, fields, (a, b) => a.diff - a.diff),
     `\n</details>`
+  ].join('\n')
+}
+
+
+function loadJSONFile(path: string) {
+  return JSON.parse(fs.readFileSync(path, { encoding: 'utf-8' }))
+}
+
+export function render(
+  oldPaths: string[],
+  newPaths: string[],
+  fields: string[]
+): string {
+  return [
+    '<!--report-->',
+    '## 🏆 compress report',
+    oldPaths
+      .map((oldPath, idx) => ({
+        name: path.basename(oldPath).replace('.json', ''),
+        o: loadJSONFile(path.resolve(oldPath)) as Records,
+        n: loadJSONFile(path.resolve(newPaths[idx])) as Records
+      }))
+      .map((info) =>
+        [
+          `\n### ${info.name}\n`,
+          renderRecord(info.o, info.n, fields),
+          '\n'
+        ].join('\n')
+      )
+      .join('\n')
   ].join('\n')
 }

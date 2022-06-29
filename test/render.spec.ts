@@ -1,5 +1,5 @@
 import { describe, test, expect, vitest } from 'vitest'
-import { render } from '../src/github'
+import { render } from '../src/render'
 
 vitest.mock('@actions/core')
 

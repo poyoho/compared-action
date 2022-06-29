@@ -1,10 +1,7 @@
-import * as path from 'path'
-import * as fs from 'fs'
+import { render } from "./render"
 import * as core from '@actions/core'
 import { context, getOctokit } from '@actions/github'
-import { formatComment } from './render'
 import type { GitHub } from '@actions/github/lib/utils'
-import type { Records } from './render'
 
 async function comment(github: InstanceType<typeof GitHub>, body: string) {
   const comment = {
@@ -36,33 +33,8 @@ async function comment(github: InstanceType<typeof GitHub>, body: string) {
   }
 }
 
-function loadJSONFile(path: string) {
-  return JSON.parse(fs.readFileSync(path, { encoding: 'utf-8' }))
-}
-
-export function render(
-  oldPaths: string[],
-  newPaths: string[],
-  fields: string[]
-): string {
-  return [
-    '<!--report-->',
-    '## 🏆 compress report',
-    oldPaths
-      .map((oldPath, idx) => ({
-        name: path.basename(oldPath).replace('.json', ''),
-        o: loadJSONFile(path.resolve(oldPath)) as Records,
-        n: loadJSONFile(path.resolve(newPaths[idx])) as Records
-      }))
-      .map((info) =>
-        [
-          `\n### ${info.name}\n`,
-          formatComment(info.o, info.n, fields),
-          '\n'
-        ].join('\n')
-      )
-      .join('\n')
-  ].join('\n')
+async function cache(github: InstanceType<typeof GitHub>, oldPaths: string[]) {
+  // TODO
 }
 
 function getInputAsArray(
@@ -88,4 +60,5 @@ export async function action() {
   }
 
   await comment(github, render(oldPaths, newPaths, fields))
+  await cache(github, oldPaths)
 }
