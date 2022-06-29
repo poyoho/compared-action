@@ -23,6 +23,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
+    "@actions/cache": "^3.0.0",
     "@actions/core": "^1.8.1",
     "@actions/github": "^5.0.0"
   },

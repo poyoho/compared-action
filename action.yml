@@ -9,8 +9,12 @@ inputs:
     description: The GitHub token used to create an authenticated client
     required: true
     default: ${{ github.token }}
+  title:
+    description: for the comment title and cache key
+    required: true
+    default: "compared report"
   old-paths:
-    description: old records path
+    description: old records path and use the file name as the title
     required: true
     default: ""
   new-paths:
@@ -21,6 +25,9 @@ inputs:
     description: extract fields
     required: false
     default: ""
+  upload-chunk-size:
+    description: The chunk size used to split up large files during upload, in bytes
+    required: false
 runs:
   using: node16
   main: dist/index.js
