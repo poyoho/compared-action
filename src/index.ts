@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import { action } from "./github"
+import { action } from './github'
 
 function handleError(err: any): void {
   console.error(err)

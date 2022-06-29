@@ -1,4 +1,4 @@
-import { render } from "./render"
+import { render } from './render'
 import * as core from '@actions/core'
 import { context, getOctokit } from '@actions/github'
 import type { GitHub } from '@actions/github/lib/utils'
@@ -37,15 +37,12 @@ async function cache(github: InstanceType<typeof GitHub>, oldPaths: string[]) {
   // TODO
 }
 
-function getInputAsArray(
-  name: string,
-  options?: core.InputOptions
-): string[] {
+function getInputAsArray(name: string, options?: core.InputOptions): string[] {
   return core
     .getInput(name, options)
-    .split("\n")
-    .map(s => s.trim())
-    .filter(x => x !== "");
+    .split('\n')
+    .map((s) => s.trim())
+    .filter((x) => x !== '')
 }
 
 export async function action() {

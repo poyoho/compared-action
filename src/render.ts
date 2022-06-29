@@ -53,11 +53,7 @@ const formatFields = (info: Record<string, string>, fields: string[]) => {
   return res
 }
 
-function renderRecord(
-  oRecord: Records,
-  nRecord: Records,
-  fields: string[]
-) {
+function renderRecord(oRecord: Records, nRecord: Records, fields: string[]) {
   const nTotalServe = total(nRecord)
   const tableHeader = ['file', ...fields, 'timing', 'diff']
   return [
@@ -71,7 +67,6 @@ function renderRecord(
     `\n</details>`
   ].join('\n')
 }
-
 
 function loadJSONFile(path: string) {
   return JSON.parse(fs.readFileSync(path, { encoding: 'utf-8' }))
