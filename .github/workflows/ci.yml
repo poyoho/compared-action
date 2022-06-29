@@ -54,6 +54,7 @@ jobs:
         run: pnpm test
 
       - name: Compressed
+        if: matrix.node_version == '16' && matrix.os == 'ubuntu-latest' && github.event_name == 'pull_request'
         uses: ./
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
