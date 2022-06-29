@@ -60,11 +60,22 @@ export function render(
   ].join('\n')
 }
 
+function getInputAsArray(
+  name: string,
+  options?: core.InputOptions
+): string[] {
+  return core
+    .getInput(name, options)
+    .split("\n")
+    .map(s => s.trim())
+    .filter(x => x !== "");
+}
+
 export async function action() {
   const token = core.getInput('token', { required: true })
-  const oldPaths = core.getMultilineInput('old-paths', { required: true })
-  const newPaths = core.getMultilineInput('new-paths', { required: true })
-  const fields = core.getMultilineInput('fields')
+  const oldPaths = getInputAsArray('old-paths', { required: true })
+  const newPaths = getInputAsArray('new-paths', { required: true })
+  const fields = getInputAsArray('fields')
   const github = getOctokit(token)
 
   if (oldPaths.length !== newPaths.length) {

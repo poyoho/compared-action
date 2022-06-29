@@ -12,15 +12,15 @@ inputs:
   old-paths:
     description: old records path
     required: true
-    default: []
+    default: ''
   new-paths:
     description: new records path
     required: true
-    default: []
+    default: ''
   fields:
     description: extract fields
     required: false
-    default: []
+    default: ''
 runs:
   using: node16
   main: dist/index.js
