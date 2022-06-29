@@ -34,7 +34,7 @@ const formatTable = (
     .slice(0, 5)
     .map(
       ([key, val]) =>
-        `|${key}|${formatFields(val as any, fields)}${val.timing}|${formatDiff(
+        `|${key}${formatFields(val as any, fields)}|${val.timing}|${formatDiff(
           val.diff
         )}|`
     )
@@ -48,7 +48,7 @@ const formatLine = (fields: string[]) =>
 const formatFields = (info: Record<string, string>, fields: string[]) => {
   const res = fields.map((field) => info[field]).join('|')
   if (res != '') {
-    return `|${res}|`
+    return `|${res}`
   }
   return res
 }
