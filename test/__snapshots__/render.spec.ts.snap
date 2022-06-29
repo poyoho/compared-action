@@ -2,7 +2,7 @@
 
 exports[`render > table no fields 1`] = `
 "<!--report-->
-## 🏆 compress report
+## 🏆 compared report
 
 ### case1
 
@@ -49,7 +49,7 @@ total diff: +250ms
 
 exports[`render > table with fields 1`] = `
 "<!--report-->
-## 🏆 compress report
+## 🏆 compared report
 
 ### case1
 

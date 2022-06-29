@@ -9005,7 +9005,7 @@ function loadJSONFile(path) {
 function render(oldPaths, newPaths, fields) {
     return [
         '<!--report-->',
-        '## 🏆 compress report',
+        '## 🏆 compared report',
         oldPaths
             .map((oldPath, idx) => ({
             name: external_path_.basename(oldPath).replace('.json', ''),

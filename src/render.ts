@@ -79,7 +79,7 @@ export function render(
 ): string {
   return [
     '<!--report-->',
-    '## 🏆 compress report',
+    '## 🏆 compared report',
     oldPaths
       .map((oldPath, idx) => ({
         name: path.basename(oldPath).replace('.json', ''),
