@@ -59,10 +59,10 @@ jobs:
           token: "${{ secrets.GITHUB_TOKEN }}"
           old-paths:
             - ./sample/case1.json
-            - ./sample/case2.json
+              ./sample/case2.json
           new-paths:
             - ./sample/new.case1.json
-            - ./sample/new.case2.json
+              ./sample/new.case2.json
           fields:
             - fields
 
