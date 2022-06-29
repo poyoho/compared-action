@@ -1,4 +1,4 @@
-import path from 'path'
+import * as path from 'path'
 import * as core from '@actions/core'
 import { context, getOctokit } from '@actions/github'
 import { formatComment } from './render'
@@ -20,7 +20,7 @@ async function comment(github: InstanceType<typeof GitHub>, body: string) {
     })
   ).data
   for (const c of comments) {
-    if (c.user.type === 'Bot' && c.body.includes('<!--report-->')) {
+    if (c.user?.type === 'Bot' && c.body?.includes('<!--report-->')) {
       commentId = c.id
       break
     }

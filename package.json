@@ -14,12 +14,12 @@
   },
   "keywords": [],
   "scripts": {
+    "ci": "pnpm i",
     "build": "ncc build src/index.ts",
     "test": "vitest run",
     "test:dev": "vitest",
     "release": "bumpp --commit --push --tag && npm publish",
     "format": "prettier --write .",
-    "ci-publish": "esmo scripts/publishCI.ts",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {

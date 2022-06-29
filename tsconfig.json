@@ -1,14 +1,9 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "commonjs",
+    "target": "es2018",
     "moduleResolution": "node",
-    "sourceMap": true,
-    "lib": ["esnext"],
-    "noImplicitAny": false,
-    "suppressImplicitAnyIndexErrors": true,
-    "downlevelIteration": true,
-    "esModuleInterop": true,
-    "declaration": false
-  }
+    "strict": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "exclude": ["__test__"]
 }

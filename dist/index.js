@@ -8796,200 +8796,26 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 4648:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.action = exports.render = void 0;
-const path_1 = __importDefault(__nccwpck_require__(1017));
-const core = __importStar(__nccwpck_require__(6953));
-const github_1 = __nccwpck_require__(1340);
-const render_1 = __nccwpck_require__(3865);
-async function comment(github, body) {
-    const comment = {
-        issue_number: github_1.context.issue.number,
-        owner: github_1.context.repo.owner,
-        repo: github_1.context.repo.repo,
-        body
-    };
-    let commentId = null;
-    const comments = (await github.rest.issues.listComments({
-        ...github_1.context.repo,
-        issue_number: github_1.context.issue.number
-    })).data;
-    for (const c of comments) {
-        if (c.user.type === 'Bot' && c.body.includes('<!--report-->')) {
-            commentId = c.id;
-            break;
-        }
-    }
-    if (commentId) {
-        await github.rest.issues.updateComment({
-            comment_id: commentId,
-            ...comment
-        });
-    }
-    else {
-        await github.rest.issues.createComment(comment);
-    }
-}
-function render(oldPaths, newPaths, fields) {
-    return [
-        '<!--report-->',
-        '## 🏆 compress report',
-        oldPaths
-            .map((oldPath, idx) => ({
-            name: path_1.default.basename(oldPath).replace('.json', ''),
-            o: require(path_1.default.resolve(oldPath)),
-            n: require(path_1.default.resolve(newPaths[idx]))
-        }))
-            .map((info) => [
-            `\n### ${info.name}\n`,
-            (0, render_1.formatComment)(info.o, info.n, fields),
-            '\n'
-        ].join('\n'))
-            .join('\n')
-    ].join('\n');
-}
-exports.render = render;
-async function action() {
-    const token = core.getInput('token', { required: true });
-    const oldPaths = core.getMultilineInput('old-paths', { required: true });
-    const newPaths = core.getMultilineInput('new-paths', { required: true });
-    const fields = core.getMultilineInput('fields');
-    const github = (0, github_1.getOctokit)(token);
-    if (oldPaths.length !== newPaths.length) {
-        throw new Error('input old-paths, new-paths should had the same length');
-    }
-    await comment(github, render(oldPaths, newPaths, fields));
-}
-exports.action = action;
-
-
-/***/ }),
-
-/***/ 8891:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __importStar(__nccwpck_require__(6953));
-const github_1 = __nccwpck_require__(4648);
-function handleError(err) {
-    console.error(err);
-    core.setFailed(`Unhandled error: ${err}`);
-}
-process.on('unhandledRejection', handleError);
-(0, github_1.action)().catch(handleError);
-
-
-/***/ }),
-
-/***/ 3865:
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.formatComment = void 0;
-const total = (record) => Object.values(record).reduce((sum, info) => (sum += info.timing), 0);
-const diffRecord = (o, n) => {
-    return Object.entries(n).map(([key, val]) => {
-        ;
-        val.diff = val.timing - (o[key].timing || 0);
-        return [key, val];
-    });
-};
-const formatDiff = (diff) => `${diff > 0 ? `+` : `-`}${diff}`;
-const formatTable = (o, n, fields, sortFn) => {
-    return diffRecord(o, n)
-        .sort((a, b) => sortFn(a[1], b[1]))
-        .slice(0, 5)
-        .map(([key, val]) => `|${key}|${formatFields(val, fields)}${val.timing}|${formatDiff(val.diff)}|`)
-        .join('\n');
-};
-const formatHeader = (fields) => `|${fields.join('|')}|`;
-const formatLine = (fields) => `|${fields.map(() => '----').join('|')}|`;
-const formatFields = (info, fields) => {
-    const res = fields.map((field) => info[field]).join('|');
-    if (res != '') {
-        return `|${res}|`;
-    }
-    return res;
-};
-function formatComment(oRecord, nRecord, fields) {
-    const nTotalServe = total(nRecord);
-    const tableHeader = ['file', ...fields, 'timing', 'diff'];
-    return [
-        `total: ${nTotalServe}ms`,
-        `total diff: ${formatDiff(nTotalServe - total(oRecord))}ms`,
-        `\n<details><summary> Toggle detail... </summary>`,
-        '\n### 🗒️ Top 5 (diff)\n',
-        formatHeader(tableHeader),
-        formatLine(tableHeader),
-        formatTable(oRecord, nRecord, fields, (a, b) => a.diff - a.diff),
-        `\n</details>`
-    ].join('\n');
-}
-exports.formatComment = formatComment;
-
-
-/***/ }),
-
 /***/ 2628:
 /***/ ((module) => {
 
 module.exports = eval("require")("encoding");
 
+
+/***/ }),
+
+/***/ 875:
+/***/ ((module) => {
+
+function webpackEmptyContext(req) {
+	var e = new Error("Cannot find module '" + req + "'");
+	e.code = 'MODULE_NOT_FOUND';
+	throw e;
+}
+webpackEmptyContext.keys = () => ([]);
+webpackEmptyContext.resolve = webpackEmptyContext;
+webpackEmptyContext.id = 875;
+module.exports = webpackEmptyContext;
 
 /***/ }),
 
@@ -9131,14 +8957,146 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ }
 /******/ 
 /************************************************************************/
+/******/ /* webpack/runtime/hasOwnProperty shorthand */
+/******/ (() => {
+/******/ 	__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ })();
+/******/ 
 /******/ /* webpack/runtime/compat */
 /******/ 
 /******/ if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = new URL('.', import.meta.url).pathname.slice(import.meta.url.match(/^file:\/\/\/\w:/) ? 1 : 0, -1) + "/";
 /******/ 
 /************************************************************************/
-/******/ 
-/******/ // startup
-/******/ // Load entry module and return exports
-/******/ // This entry module is referenced by other modules so it can't be inlined
-/******/ var __webpack_exports__ = __nccwpck_require__(8891);
-/******/ 
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
+
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@1.9.0/node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(6953);
+// EXTERNAL MODULE: external "path"
+var external_path_ = __nccwpck_require__(1017);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@5.0.3/node_modules/@actions/github/lib/github.js
+var lib_github = __nccwpck_require__(1340);
+;// CONCATENATED MODULE: ./src/render.ts
+const total = (record) => Object.values(record).reduce((sum, info) => (sum += info.timing), 0);
+const diffRecord = (o, n) => {
+    return Object.entries(n).map(([key, val]) => {
+        ;
+        val.diff = val.timing - (o[key].timing || 0);
+        return [key, val];
+    });
+};
+const formatDiff = (diff) => `${diff > 0 ? `+` : `-`}${diff}`;
+const formatTable = (o, n, fields, sortFn) => {
+    return diffRecord(o, n)
+        .sort((a, b) => sortFn(a[1], b[1]))
+        .slice(0, 5)
+        .map(([key, val]) => `|${key}|${formatFields(val, fields)}${val.timing}|${formatDiff(val.diff)}|`)
+        .join('\n');
+};
+const formatHeader = (fields) => `|${fields.join('|')}|`;
+const formatLine = (fields) => `|${fields.map(() => '----').join('|')}|`;
+const formatFields = (info, fields) => {
+    const res = fields.map((field) => info[field]).join('|');
+    if (res != '') {
+        return `|${res}|`;
+    }
+    return res;
+};
+function formatComment(oRecord, nRecord, fields) {
+    const nTotalServe = total(nRecord);
+    const tableHeader = ['file', ...fields, 'timing', 'diff'];
+    return [
+        `total: ${nTotalServe}ms`,
+        `total diff: ${formatDiff(nTotalServe - total(oRecord))}ms`,
+        `\n<details><summary> Toggle detail... </summary>`,
+        '\n### 🗒️ Top 5 (diff)\n',
+        formatHeader(tableHeader),
+        formatLine(tableHeader),
+        formatTable(oRecord, nRecord, fields, (a, b) => a.diff - a.diff),
+        `\n</details>`
+    ].join('\n');
+}
+
+;// CONCATENATED MODULE: ./src/github.ts
+
+
+
+
+async function comment(github, body) {
+    var _a, _b;
+    const comment = {
+        issue_number: lib_github.context.issue.number,
+        owner: lib_github.context.repo.owner,
+        repo: lib_github.context.repo.repo,
+        body
+    };
+    let commentId = null;
+    const comments = (await github.rest.issues.listComments({
+        ...lib_github.context.repo,
+        issue_number: lib_github.context.issue.number
+    })).data;
+    for (const c of comments) {
+        if (((_a = c.user) === null || _a === void 0 ? void 0 : _a.type) === 'Bot' && ((_b = c.body) === null || _b === void 0 ? void 0 : _b.includes('<!--report-->'))) {
+            commentId = c.id;
+            break;
+        }
+    }
+    if (commentId) {
+        await github.rest.issues.updateComment({
+            comment_id: commentId,
+            ...comment
+        });
+    }
+    else {
+        await github.rest.issues.createComment(comment);
+    }
+}
+function render(oldPaths, newPaths, fields) {
+    return [
+        '<!--report-->',
+        '## 🏆 compress report',
+        oldPaths
+            .map((oldPath, idx) => ({
+            name: external_path_.basename(oldPath).replace('.json', ''),
+            o: __nccwpck_require__(875)(external_path_.resolve(oldPath)),
+            n: __nccwpck_require__(875)(external_path_.resolve(newPaths[idx]))
+        }))
+            .map((info) => [
+            `\n### ${info.name}\n`,
+            formatComment(info.o, info.n, fields),
+            '\n'
+        ].join('\n'))
+            .join('\n')
+    ].join('\n');
+}
+function getInputAsArray(name, options) {
+    return core.getInput(name, options)
+        .split("\n")
+        .map(s => s.trim())
+        .filter(x => x !== "");
+}
+async function action() {
+    const token = core.getInput('token', { required: true });
+    const oldPaths = getInputAsArray('old-paths', { required: true });
+    const newPaths = getInputAsArray('new-paths', { required: true });
+    const fields = getInputAsArray('fields');
+    const github = (0,lib_github.getOctokit)(token);
+    if (oldPaths.length !== newPaths.length) {
+        throw new Error('input old-paths, new-paths should had the same length');
+    }
+    await comment(github, render(oldPaths, newPaths, fields));
+}
+
+;// CONCATENATED MODULE: ./src/index.ts
+
+
+function handleError(err) {
+    console.error(err);
+    core.setFailed(`Unhandled error: ${err}`);
+}
+process.on('unhandledRejection', handleError);
+action().catch(handleError);
+
+})();
+
