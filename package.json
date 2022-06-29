@@ -1,0 +1,53 @@
+{
+  "name": "compressed-time",
+  "license": "MIT",
+  "author": "poyoho",
+  "description": "compressed time action",
+  "type": "module",
+  "main": "dist/compressed-time.es.js",
+  "module": "dist/compressed-time.es.js",
+  "types": "dist/types/index.d.ts",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/poyoho/compressed-time-action"
+  },
+  "keywords": [],
+  "scripts": {
+    "build": "ncc build src/index.ts",
+    "test": "vitest run",
+    "test:dev": "vitest",
+    "release": "bumpp --commit --push --tag && npm publish",
+    "format": "prettier --write .",
+    "ci-publish": "esmo scripts/publishCI.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@actions/core": "^1.8.1",
+    "@actions/github": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@vercel/ncc": "^0.34.0",
+    "bumpp": "^8.2.1",
+    "lint-staged": "^12.3.3",
+    "minimist": "^1.2.5",
+    "prettier": "^2.7.1",
+    "simple-git-hooks": "^2.7.0",
+    "typescript": "^4.6.2",
+    "vite": "^2.9.13",
+    "vitest": "^0.7.0"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm exec lint-staged --concurrent false"
+  },
+  "lint-staged": {
+    "*": [
+      "prettier --write --ignore-unknown"
+    ]
+  },
+  "files": [
+    "dist",
+    "lib"
+  ]
+}
