@@ -1,6 +1,6 @@
-name: compressed report
+name: compared report
 author: poyoho
-description: compressed json file and comment in pull requests
+description: compared json file and comment in pull requests
 branding:
   color: blue
   icon: code

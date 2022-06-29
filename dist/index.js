@@ -8973,7 +8973,7 @@ const formatTable = (o, n, fields, sortFn) => {
     return diffRecord(o, n)
         .sort((a, b) => sortFn(a[1], b[1]))
         .slice(0, 5)
-        .map(([key, val]) => `|${key}|${formatFields(val, fields)}${val.timing}|${formatDiff(val.diff)}|`)
+        .map(([key, val]) => `|${key}${formatFields(val, fields)}|${val.timing}|${formatDiff(val.diff)}|`)
         .join('\n');
 };
 const formatHeader = (fields) => `|${fields.join('|')}|`;
@@ -8981,7 +8981,7 @@ const formatLine = (fields) => `|${fields.map(() => '----').join('|')}|`;
 const formatFields = (info, fields) => {
     const res = fields.map((field) => info[field]).join('|');
     if (res != '') {
-        return `|${res}|`;
+        return `|${res}`;
     }
     return res;
 };
@@ -9061,9 +9061,9 @@ async function cache(github, oldPaths) {
 }
 function getInputAsArray(name, options) {
     return core.getInput(name, options)
-        .split("\n")
-        .map(s => s.trim())
-        .filter(x => x !== "");
+        .split('\n')
+        .map((s) => s.trim())
+        .filter((x) => x !== '');
 }
 async function action() {
     const token = core.getInput('token', { required: true });

@@ -1,16 +1,16 @@
 {
-  "name": "compressed-time",
+  "name": "compared-time",
   "license": "MIT",
   "author": "poyoho",
-  "description": "compressed time action",
+  "description": "compared time action",
   "type": "module",
-  "main": "dist/compressed-time.es.js",
-  "module": "dist/compressed-time.es.js",
+  "main": "dist/compared-time.es.js",
+  "module": "dist/compared-time.es.js",
   "types": "dist/types/index.d.ts",
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/poyoho/compressed-time-action"
+    "url": "https://github.com/poyoho/compared-time-action"
   },
   "keywords": [],
   "scripts": {
