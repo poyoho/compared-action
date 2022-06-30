@@ -158,10 +158,14 @@ export async function restoreFiles(primaryKey: string, cachePaths: string[]) {
   }
 }
 
-export async function cacheFiles(primaryKey: string, cachePaths: string[], opts: {
-  force?: boolean,
-  uploadChunkSize?: number
-}) {
+export async function cacheFiles(
+  primaryKey: string,
+  cachePaths: string[],
+  opts: {
+    force?: boolean
+    uploadChunkSize?: number
+  }
+) {
   try {
     if (!isCacheFeatureAvailable()) {
       return

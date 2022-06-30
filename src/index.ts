@@ -1,6 +1,12 @@
 import * as core from '@actions/core'
 import { getOctokit } from '@actions/github'
-import { getInputAsArray, comment, restoreFiles, cacheFiles, getInputAsInt } from './action'
+import {
+  getInputAsArray,
+  comment,
+  restoreFiles,
+  cacheFiles,
+  getInputAsInt
+} from './action'
 import { render } from './render'
 
 function handleError(err: any): void {
@@ -28,7 +34,7 @@ async function action() {
   // cache the oldPaths if not had the cache or config force cache
   await cacheFiles(title, oldPaths, {
     force: forceCache,
-    uploadChunkSize,
+    uploadChunkSize
   })
 }
 
