@@ -60,7 +60,7 @@ jobs:
             ./sample/new.case2.json
           fields: |
             fields
-          need-cache: ${{ env.GITHUB_REF_NAME == 'master' }}
+          cache-only: ${{ env.GITHUB_REF_NAME == 'master' }}
 
   lint:
     timeout-minutes: 10

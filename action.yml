@@ -28,8 +28,8 @@ inputs:
   upload-chunk-size:
     description: The chunk size used to split up large files during upload, in bytes
     required: false
-  need-cache:
-    description: need cache the old paths (boolean)
+  cache-only:
+    description: only cache the old paths (boolean)
     required: false
     default: false
 runs:
