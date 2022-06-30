@@ -1,3 +1,6 @@
+import * as path from 'path'
+import * as fs from 'fs'
+
 export interface TimeRecord {
   timing: number
 }
@@ -31,7 +34,7 @@ const formatTable = (
     .slice(0, 5)
     .map(
       ([key, val]) =>
-        `|${key}|${formatFields(val as any, fields)}${val.timing}|${formatDiff(
+        `|${key}${formatFields(val as any, fields)}|${val.timing}|${formatDiff(
           val.diff
         )}|`
     )
@@ -45,16 +48,12 @@ const formatLine = (fields: string[]) =>
 const formatFields = (info: Record<string, string>, fields: string[]) => {
   const res = fields.map((field) => info[field]).join('|')
   if (res != '') {
-    return `|${res}|`
+    return `|${res}`
   }
   return res
 }
 
-export function formatComment(
-  oRecord: Records,
-  nRecord: Records,
-  fields: string[]
-) {
+function renderRecord(oRecord: Records, nRecord: Records, fields: string[]) {
   const nTotalServe = total(nRecord)
   const tableHeader = ['file', ...fields, 'timing', 'diff']
   return [
@@ -66,5 +65,35 @@ export function formatComment(
     formatLine(tableHeader),
     formatTable(oRecord, nRecord, fields, (a, b) => a.diff - a.diff),
     `\n</details>`
+  ].join('\n')
+}
+
+function loadJSONFile(path: string) {
+  return JSON.parse(fs.readFileSync(path, { encoding: 'utf-8' }))
+}
+
+export function render(
+  oldPaths: string[],
+  newPaths: string[],
+  fields: string[],
+  title: string
+): string {
+  return [
+    '<!--report-->',
+    `## 🏆 ${title}`,
+    oldPaths
+      .map((oldPath, idx) => ({
+        name: path.basename(oldPath).replace('.json', ''),
+        o: loadJSONFile(path.resolve(oldPath)) as Records,
+        n: loadJSONFile(path.resolve(newPaths[idx])) as Records
+      }))
+      .map((info) =>
+        [
+          `\n### ${info.name}\n`,
+          renderRecord(info.o, info.n, fields),
+          '\n'
+        ].join('\n')
+      )
+      .join('\n')
   ].join('\n')
 }

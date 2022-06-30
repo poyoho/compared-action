@@ -1,6 +1,6 @@
-name: compressed report
+name: compared report
 author: poyoho
-description: compressed json file and comment in pull requests
+description: compared json file and comment in pull requests
 branding:
   color: blue
   icon: code
@@ -9,18 +9,29 @@ inputs:
     description: The GitHub token used to create an authenticated client
     required: true
     default: ${{ github.token }}
-  old-paths:
-    description: old records path
+  title:
+    description: for the comment title and cache key
     required: true
-    default: ''
+    default: "compared report"
+  old-paths:
+    description: old records path and use the file name as the title
+    required: true
+    default: ""
   new-paths:
     description: new records path
     required: true
-    default: ''
+    default: ""
   fields:
     description: extract fields
     required: false
-    default: ''
+    default: ""
+  upload-chunk-size:
+    description: The chunk size used to split up large files during upload, in bytes
+    required: false
+  cache-only:
+    description: only cache the old paths (boolean)
+    required: false
+    default: false
 runs:
   using: node16
   main: dist/index.js

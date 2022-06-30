@@ -1,16 +1,16 @@
 {
-  "name": "compressed-time",
+  "name": "compared-time",
   "license": "MIT",
   "author": "poyoho",
-  "description": "compressed time action",
+  "description": "compared time action",
   "type": "module",
-  "main": "dist/compressed-time.es.js",
-  "module": "dist/compressed-time.es.js",
+  "main": "dist/compared-time.es.js",
+  "module": "dist/compared-time.es.js",
   "types": "dist/types/index.d.ts",
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/poyoho/compressed-time-action"
+    "url": "https://github.com/poyoho/compared-time-action"
   },
   "keywords": [],
   "scripts": {
@@ -18,21 +18,21 @@
     "build": "ncc build src/index.ts",
     "test": "vitest run",
     "test:dev": "vitest",
-    "release": "bumpp --commit --push --tag && npm publish",
+    "release": "release",
     "format": "prettier --write .",
     "prepublishOnly": "npm run build"
   },
-  "dependencies": {
-    "@actions/core": "^1.8.1",
-    "@actions/github": "^5.0.0"
-  },
   "devDependencies": {
+    "@actions/cache": "^3.0.0",
+    "@actions/core": "^1.8.1",
+    "@actions/github": "^5.0.0",
     "@types/node": "^18.0.0",
     "@vercel/ncc": "^0.34.0",
     "bumpp": "^8.2.1",
     "lint-staged": "^12.3.3",
     "minimist": "^1.2.5",
     "prettier": "^2.7.1",
+    "release-prompt": "^0.0.7",
     "simple-git-hooks": "^2.7.0",
     "typescript": "^4.6.2",
     "vite": "^2.9.13",

@@ -1,8 +1,8 @@
 // Vitest Snapshot v1
 
-exports[`render > table 1`] = `
+exports[`render > table no fields 1`] = `
 "<!--report-->
-## 🏆 compress report
+## 🏆 compared action
 
 ### case1
 
@@ -41,6 +41,53 @@ total diff: +250ms
 |c|80|+50|
 |d|90|+50|
 |e|100|+50|
+
+</details>
+
+"
+`;
+
+exports[`render > table with fields 1`] = `
+"<!--report-->
+## 🏆 compared action
+
+### case1
+
+total: 400ms
+total diff: +250ms
+
+<details><summary> Toggle detail... </summary>
+
+### 🗒️ Top 5 (diff)
+
+|file|fields|timing|diff|
+|----|----|----|----|
+|a|a|60|+50|
+|b|b|70|+50|
+|c|c|80|+50|
+|d|d|90|+50|
+|e|e|100|+50|
+
+</details>
+
+
+
+### case2
+
+total: 400ms
+total diff: +250ms
+
+<details><summary> Toggle detail... </summary>
+
+### 🗒️ Top 5 (diff)
+
+|file|fields|timing|diff|
+|----|----|----|----|
+|a|a|60|+50|
+|b|b|70|+50|
+|c|c|80|+50|
+|d|d|90|+50|
+|e|e|100|+50|
 
 </details>
 
