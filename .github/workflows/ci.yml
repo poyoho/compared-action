@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
       - release/*
   pull_request:
 
@@ -60,7 +60,7 @@ jobs:
             ./sample/new.case2.json
           fields: |
             fields
-          cache-only: ${{ env.GITHUB_REF_NAME == 'master' }}
+          cache-only: ${{ env.GITHUB_REF_NAME == 'main' }}
 
   lint:
     timeout-minutes: 10
