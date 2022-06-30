@@ -20,7 +20,7 @@ async function action() {
   const newPaths = getInputAsArray('new-paths', { required: true })
   const fields = getInputAsArray('fields')
   const title = core.getInput('title')
-  const needCache = core.getBooleanInput('need-cache')
+  const cacheOnly = core.getBooleanInput('cache-only')
   const uploadChunkSize = getInputAsInt('upload-chunk-size')
   const github = getOctokit(token)
 
@@ -33,14 +33,14 @@ async function action() {
   core.info(`new-paths: ${newPaths}`)
   core.info(`fields: ${fields}`)
   core.info(`title: ${title}`)
-  core.info(`force-cache: ${needCache}`)
+  core.info(`force-cache: ${cacheOnly}`)
   core.info(`upload-chunk-size: ${uploadChunkSize}`)
 
   // use the cache overwrite the oldPaths if had the cache
   await restoreFiles(title, oldPaths)
   await comment(github, render(oldPaths, newPaths, fields, title))
   // cache the oldPaths if not had the cache or config force cache
-  if (needCache) {
+  if (cacheOnly) {
     await cacheFiles(title, oldPaths, { uploadChunkSize })
   }
 }
