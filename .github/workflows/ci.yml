@@ -57,6 +57,7 @@ jobs:
         if: matrix.node_version == '16' && matrix.os == 'ubuntu-latest' && github.event_name == 'pull_request'
         uses: ./
         with:
+          title: "compared timing report"
           token: "${{ secrets.GITHUB_TOKEN }}"
           old-paths: |
             ./sample/case1.json
@@ -66,6 +67,7 @@ jobs:
             ./sample/new.case2.json
           fields: |
             fields
+          force-cache: ${{ env.GITHUB_REF_NAME == 'master' }}
 
   lint:
     timeout-minutes: 10

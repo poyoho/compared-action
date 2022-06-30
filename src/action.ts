@@ -3,7 +3,7 @@ import * as cache from '@actions/cache'
 import { context } from '@actions/github'
 import type { GitHub } from '@actions/github/lib/utils'
 
-function getInputAsInt(
+export function getInputAsInt(
   name: string,
   options?: core.InputOptions
 ): number | undefined {
@@ -43,12 +43,21 @@ function isValidEvent(): boolean {
   return 'GITHUB_REF' in process.env && Boolean(process.env['GITHUB_REF'])
 }
 
+function isExactKeyMatch(key: string, cacheKey?: string): boolean {
+  return !!(
+    cacheKey &&
+    cacheKey.localeCompare(key, undefined, {
+      sensitivity: 'accent'
+    }) === 0
+  )
+}
+
 function setCacheState(state: string): void {
-  core.saveState('CACHE_RESULT', state)
+  core.saveState('COMPARED_CACHE_RESULT', state)
 }
 
 function getCacheState(): string | undefined {
-  const cacheKey = core.getState('CACHE_RESULT')
+  const cacheKey = core.getState('COMPARED_CACHE_RESULT')
   if (cacheKey) {
     core.debug(`Cache state/key: ${cacheKey}`)
     return cacheKey
@@ -77,6 +86,12 @@ export async function comment(
   github: InstanceType<typeof GitHub>,
   body: string
 ) {
+  if (!isValidEvent()) {
+    logWarning(
+      `Event Validation Error: The event type ${process.env.GITHUB_EVENT_NAME} is not supported because it's not tied to a branch or tag ref.`
+    )
+    return
+  }
   const comment = {
     issue_number: context.issue.number,
     owner: context.repo.owner,
@@ -106,11 +121,7 @@ export async function comment(
   }
 }
 
-export async function restoreFiles(
-  primaryKey: string,
-  cachePaths: string[],
-  restoreKeys: string[]
-) {
+export async function restoreFiles(primaryKey: string, cachePaths: string[]) {
   try {
     if (!isCacheFeatureAvailable()) {
       return
@@ -124,26 +135,16 @@ export async function restoreFiles(
       return
     }
 
-    core.saveState('CACHE_KEY', primaryKey)
-
     try {
-      const cacheKey = await cache.restoreCache(
-        cachePaths,
-        primaryKey,
-        restoreKeys
-      )
+      const cacheKey = await cache.restoreCache(cachePaths, primaryKey)
       if (!cacheKey) {
-        core.info(
-          `Cache not found for input keys: ${[primaryKey, ...restoreKeys].join(
-            ', '
-          )}`
-        )
+        core.info(`Cache not found for input keys: ${primaryKey}`)
         return
       }
 
-      // Store the matched cache key
       setCacheState(cacheKey)
       core.info(`Cache restored from key: ${cacheKey}`)
+      core.info(`Cache restored from path: ${cachePaths.join(', ')}`)
     } catch (error: unknown) {
       const typedError = error as Error
       if (typedError.name === cache.ValidationError.name) {
@@ -157,20 +158,49 @@ export async function restoreFiles(
   }
 }
 
-export async function cacheFiles(primaryKey: string, cachePaths: string[]) {
+export async function cacheFiles(primaryKey: string, cachePaths: string[], opts: {
+  force?: boolean,
+  uploadChunkSize?: number
+}) {
   try {
-    await cache.saveCache(cachePaths, primaryKey, {
-      uploadChunkSize: getInputAsInt('upload-chunk-size')
-    })
-    core.info(`Cache saved with key: ${primaryKey}`)
-  } catch (error: unknown) {
-    const typedError = error as Error
-    if (typedError.name === cache.ValidationError.name) {
-      throw error
-    } else if (typedError.name === cache.ReserveCacheError.name) {
-      core.info(typedError.message)
-    } else {
-      logWarning(typedError.message)
+    if (!isCacheFeatureAvailable()) {
+      return
     }
+
+    if (!isValidEvent()) {
+      logWarning(
+        `Event Validation Error: The event type ${process.env.GITHUB_EVENT_NAME} is not supported because it's not tied to a branch or tag ref.`
+      )
+      return
+    }
+
+    if (!opts?.force) {
+      const state = getCacheState()
+      if (isExactKeyMatch(primaryKey, state)) {
+        core.info(
+          `Cache hit occurred on the primary key ${primaryKey}, not saving cache.`
+        )
+        return
+      }
+    }
+
+    try {
+      await cache.saveCache(cachePaths, primaryKey, {
+        uploadChunkSize: opts?.uploadChunkSize
+      })
+      core.info(`Cache saved with key: ${primaryKey}`)
+      core.info(`Cache saved with path: ${cachePaths.join(', ')}`)
+    } catch (error: unknown) {
+      const typedError = error as Error
+      if (typedError.name === cache.ValidationError.name) {
+        throw error
+      } else if (typedError.name === cache.ReserveCacheError.name) {
+        core.info(typedError.message)
+      } else {
+        logWarning(typedError.message)
+      }
+    }
+  } catch (error: unknown) {
+    logWarning((error as Error).message)
   }
 }

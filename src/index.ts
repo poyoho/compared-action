@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import { getOctokit } from '@actions/github'
-import { getInputAsArray, comment } from './action'
-import { render } from "./render"
+import { getInputAsArray, comment, restoreFiles, cacheFiles, getInputAsInt } from './action'
+import { render } from './render'
 
 function handleError(err: any): void {
   console.error(err)
@@ -13,14 +13,23 @@ async function action() {
   const oldPaths = getInputAsArray('old-paths', { required: true })
   const newPaths = getInputAsArray('new-paths', { required: true })
   const fields = getInputAsArray('fields')
+  const title = core.getInput('title')
+  const forceCache = core.getBooleanInput('force-cache')
+  const uploadChunkSize = getInputAsInt('upload-chunk-size')
   const github = getOctokit(token)
 
   if (oldPaths.length !== newPaths.length) {
     throw new Error('input old-paths, new-paths should had the same length')
   }
 
-  await comment(github, render(oldPaths, newPaths, fields))
-  // await cache(github, oldPaths)
+  // use the cache overwrite the oldPaths if had the cache
+  await restoreFiles(title, oldPaths)
+  await comment(github, render(oldPaths, newPaths, fields, title))
+  // cache the oldPaths if not had the cache or config force cache
+  await cacheFiles(title, oldPaths, {
+    force: forceCache,
+    uploadChunkSize,
+  })
 }
 
 process.on('unhandledRejection', handleError)

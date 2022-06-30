@@ -28,6 +28,10 @@ inputs:
   upload-chunk-size:
     description: The chunk size used to split up large files during upload, in bytes
     required: false
+  force-cache:
+    description: force cache the old paths(boolean)
+    required: false
+    default: false
 runs:
   using: node16
   main: dist/index.js

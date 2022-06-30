@@ -75,11 +75,12 @@ function loadJSONFile(path: string) {
 export function render(
   oldPaths: string[],
   newPaths: string[],
-  fields: string[]
+  fields: string[],
+  title: string
 ): string {
   return [
     '<!--report-->',
-    '## 🏆 compared report',
+    `## 🏆 ${title}`,
     oldPaths
       .map((oldPath, idx) => ({
         name: path.basename(oldPath).replace('.json', ''),
