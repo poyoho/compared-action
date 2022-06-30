@@ -57,7 +57,7 @@ jobs:
         if: matrix.node_version == '16' && matrix.os == 'ubuntu-latest' && github.event_name == 'pull_request'
         uses: ./
         with:
-          title: "compared timing report"
+          title: "compared report"
           token: "${{ secrets.GITHUB_TOKEN }}"
           old-paths: |
             ./sample/case1.json
