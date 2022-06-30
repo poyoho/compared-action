@@ -28,6 +28,15 @@ async function action() {
     throw new Error('input old-paths, new-paths should had the same length')
   }
 
+
+  core.info("input: ")
+  core.info(`old-paths: ${oldPaths}`)
+  core.info(`new-paths: ${newPaths}`)
+  core.info(`fields: ${fields}`)
+  core.info(`title: ${title}`)
+  core.info(`force-cache: ${forceCache}`)
+  core.info(`upload-chunk-size: ${uploadChunkSize}`)
+
   // use the cache overwrite the oldPaths if had the cache
   await restoreFiles(title, oldPaths)
   await comment(github, render(oldPaths, newPaths, fields, title))
