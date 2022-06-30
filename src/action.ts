@@ -92,6 +92,14 @@ export async function comment(
     )
     return
   }
+
+  if (context.eventName !== 'pull_request') {
+    logWarning(
+      `Event Validation Error: comment feature is not supported because it's not in pull request.`
+    )
+    return
+  }
+
   const comment = {
     issue_number: context.issue.number,
     owner: context.repo.owner,
