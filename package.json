@@ -4,10 +4,7 @@
   "author": "poyoho",
   "description": "compared time action",
   "type": "module",
-  "main": "dist/compared-time.es.js",
-  "module": "dist/compared-time.es.js",
-  "types": "dist/types/index.d.ts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/poyoho/compared-time-action"
@@ -32,7 +29,7 @@
     "lint-staged": "^12.3.3",
     "minimist": "^1.2.5",
     "prettier": "^2.7.1",
-    "release-prompt": "^0.0.7",
+    "release-prompt": "^0.0.10",
     "simple-git-hooks": "^2.7.0",
     "typescript": "^4.6.2",
     "vite": "^2.9.13",
@@ -45,9 +42,5 @@
     "*": [
       "prettier --write --ignore-unknown"
     ]
-  },
-  "files": [
-    "dist",
-    "lib"
-  ]
+  }
 }

@@ -60,7 +60,7 @@ jobs:
             ./sample/new.case2.json
           fields: |
             fields
-          cache-only: ${{ github.ref == 'refs/heads/main' }}
+          cache-only: ${{ github.ref_name == 'main' }}
 
   lint:
     timeout-minutes: 10
