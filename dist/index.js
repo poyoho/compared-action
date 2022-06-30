@@ -62579,10 +62579,12 @@ async function restoreFiles(primaryKey, cachePaths) {
             logWarning(`Event Validation Error: The event type ${process.env.GITHUB_EVENT_NAME} is not supported because it's not tied to a branch or tag ref.`);
             return;
         }
+        const suffix = primaryKey + '-';
+        const key = suffix + lib_github.context.sha;
         try {
-            const cacheKey = await cache.restoreCache(cachePaths, primaryKey);
+            const cacheKey = await cache.restoreCache(cachePaths, key, [suffix]);
             if (!cacheKey) {
-                core.info(`Cache not found for input keys: ${primaryKey}`);
+                core.info(`Cache not found for input keys: ${key}`);
                 return;
             }
             setCacheState(cacheKey);
@@ -62612,18 +62614,17 @@ async function cacheFiles(primaryKey, cachePaths, opts) {
             logWarning(`Event Validation Error: The event type ${process.env.GITHUB_EVENT_NAME} is not supported because it's not tied to a branch or tag ref.`);
             return;
         }
-        if (!(opts === null || opts === void 0 ? void 0 : opts.force)) {
-            const state = getCacheState();
-            if (isExactKeyMatch(primaryKey, state)) {
-                core.info(`Cache hit occurred on the primary key ${primaryKey}, not saving cache.`);
-                return;
-            }
+        const state = getCacheState();
+        if (isExactKeyMatch(primaryKey, state)) {
+            core.info(`Cache hit occurred on the primary key ${primaryKey}, not saving cache.`);
+            return;
         }
         try {
-            await cache.saveCache(cachePaths, primaryKey, {
+            const key = primaryKey + '-' + lib_github.context.sha;
+            await cache.saveCache(cachePaths, key, {
                 uploadChunkSize: opts === null || opts === void 0 ? void 0 : opts.uploadChunkSize
             });
-            core.info(`Cache saved with key: ${primaryKey}`);
+            core.info(`Cache saved with key: ${key}`);
             core.info(`Cache saved with path: ${cachePaths.join(', ')}`);
         }
         catch (error) {
@@ -62727,7 +62728,7 @@ async function action() {
     const newPaths = getInputAsArray('new-paths', { required: true });
     const fields = getInputAsArray('fields');
     const title = core.getInput('title');
-    const forceCache = core.getBooleanInput('force-cache');
+    const needCache = core.getBooleanInput('need-cache');
     const uploadChunkSize = getInputAsInt('upload-chunk-size');
     const github = (0,lib_github.getOctokit)(token);
     if (oldPaths.length !== newPaths.length) {
@@ -62738,16 +62739,15 @@ async function action() {
     core.info(`new-paths: ${newPaths}`);
     core.info(`fields: ${fields}`);
     core.info(`title: ${title}`);
-    core.info(`force-cache: ${forceCache}`);
+    core.info(`force-cache: ${needCache}`);
     core.info(`upload-chunk-size: ${uploadChunkSize}`);
     // use the cache overwrite the oldPaths if had the cache
     await restoreFiles(title, oldPaths);
     await comment(github, render(oldPaths, newPaths, fields, title));
     // cache the oldPaths if not had the cache or config force cache
-    await cacheFiles(title, oldPaths, {
-        force: forceCache,
-        uploadChunkSize
-    });
+    if (needCache) {
+        await cacheFiles(title, oldPaths, { uploadChunkSize });
+    }
 }
 process.on('unhandledRejection', handleError);
 action().catch(handleError);
