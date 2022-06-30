@@ -62542,6 +62542,10 @@ async function comment(github, body) {
         logWarning(`Event Validation Error: The event type ${process.env.GITHUB_EVENT_NAME} is not supported because it's not tied to a branch or tag ref.`);
         return;
     }
+    if (lib_github.context.eventName !== 'pull_request') {
+        logWarning(`Event Validation Error: comment feature is not supported because it's not in pull request.`);
+        return;
+    }
     const comment = {
         issue_number: lib_github.context.issue.number,
         owner: lib_github.context.repo.owner,
