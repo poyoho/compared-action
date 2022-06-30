@@ -46,9 +46,6 @@ jobs:
       - name: Test
         run: pnpm test
 
-      - name: ref
-        run: echo "${{ github.ref }}"
-
       - name: Compared
         if: matrix.node_version == '16' && matrix.os == 'ubuntu-latest'
         uses: ./
@@ -63,7 +60,7 @@ jobs:
             ./sample/new.case2.json
           fields: |
             fields
-          cache-only: ${{ env.GITHUB_REF_NAME == 'main' }}
+          cache-only: ${{ github.ref == 'refs/heads/main' }}
 
   lint:
     timeout-minutes: 10
