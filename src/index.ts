@@ -28,8 +28,7 @@ async function action() {
     throw new Error('input old-paths, new-paths should had the same length')
   }
 
-
-  core.info("input: ")
+  core.info('input: ')
   core.info(`old-paths: ${oldPaths}`)
   core.info(`new-paths: ${newPaths}`)
   core.info(`fields: ${fields}`)
