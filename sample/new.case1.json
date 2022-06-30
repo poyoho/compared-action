@@ -1,7 +1,7 @@
 {
-  "a": { "fields": "a", "timing": 160 },
-  "b": { "fields": "b", "timing": 170 },
-  "c": { "fields": "c", "timing": 180 },
-  "d": { "fields": "d", "timing": 190 },
-  "e": { "fields": "e", "timing": 200 }
+  "a": { "fields": "a", "timing": 10 },
+  "b": { "fields": "b", "timing": 10 },
+  "c": { "fields": "c", "timing": 10 },
+  "d": { "fields": "d", "timing": 10 },
+  "e": { "fields": "e", "timing": 10 }
 }

@@ -6,8 +6,8 @@ exports[`render > table no fields 1`] = `
 
 ### case1
 
-total: 900ms
-total diff: +750ms
+total: 50ms
+total diff: --100ms
 
 <details><summary> Toggle detail... </summary>
 
@@ -15,11 +15,11 @@ total diff: +750ms
 
 |file|timing|diff|
 |----|----|----|
-|a|160|+150|
-|b|170|+150|
-|c|180|+150|
-|d|190|+150|
-|e|200|+150|
+|a|10|-0|
+|b|10|--10|
+|c|10|--20|
+|d|10|--30|
+|e|10|--40|
 
 </details>
 
@@ -27,8 +27,8 @@ total diff: +750ms
 
 ### case2
 
-total: 900ms
-total diff: +750ms
+total: 50ms
+total diff: --100ms
 
 <details><summary> Toggle detail... </summary>
 
@@ -36,11 +36,11 @@ total diff: +750ms
 
 |file|timing|diff|
 |----|----|----|
-|a|160|+150|
-|b|170|+150|
-|c|180|+150|
-|d|190|+150|
-|e|200|+150|
+|a|10|-0|
+|b|10|--10|
+|c|10|--20|
+|d|10|--30|
+|e|10|--40|
 
 </details>
 
@@ -53,8 +53,8 @@ exports[`render > table with fields 1`] = `
 
 ### case1
 
-total: 900ms
-total diff: +750ms
+total: 50ms
+total diff: --100ms
 
 <details><summary> Toggle detail... </summary>
 
@@ -62,11 +62,11 @@ total diff: +750ms
 
 |file|fields|timing|diff|
 |----|----|----|----|
-|a|a|160|+150|
-|b|b|170|+150|
-|c|c|180|+150|
-|d|d|190|+150|
-|e|e|200|+150|
+|a|a|10|-0|
+|b|b|10|--10|
+|c|c|10|--20|
+|d|d|10|--30|
+|e|e|10|--40|
 
 </details>
 
@@ -74,8 +74,8 @@ total diff: +750ms
 
 ### case2
 
-total: 900ms
-total diff: +750ms
+total: 50ms
+total diff: --100ms
 
 <details><summary> Toggle detail... </summary>
 
@@ -83,11 +83,11 @@ total diff: +750ms
 
 |file|fields|timing|diff|
 |----|----|----|----|
-|a|a|160|+150|
-|b|b|170|+150|
-|c|c|180|+150|
-|d|d|190|+150|
-|e|e|200|+150|
+|a|a|10|-0|
+|b|b|10|--10|
+|c|c|10|--20|
+|d|d|10|--30|
+|e|e|10|--40|
 
 </details>
 
