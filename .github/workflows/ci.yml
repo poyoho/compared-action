@@ -46,6 +46,9 @@ jobs:
       - name: Test
         run: pnpm test
 
+      - name: ref
+        run: echo ${{ env.GITHUB_REF_NAME }}
+
       - name: Compared
         if: matrix.node_version == '16' && matrix.os == 'ubuntu-latest'
         uses: ./
