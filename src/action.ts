@@ -134,11 +134,12 @@ export async function restoreFiles(primaryKey: string, cachePaths: string[]) {
       )
       return
     }
-
+    const suffix = primaryKey + '-'
+    const key = suffix + context.sha
     try {
-      const cacheKey = await cache.restoreCache(cachePaths, primaryKey)
+      const cacheKey = await cache.restoreCache(cachePaths, key, [suffix])
       if (!cacheKey) {
-        core.info(`Cache not found for input keys: ${primaryKey}`)
+        core.info(`Cache not found for input keys: ${key}`)
         return
       }
 
@@ -162,7 +163,6 @@ export async function cacheFiles(
   primaryKey: string,
   cachePaths: string[],
   opts: {
-    force?: boolean
     uploadChunkSize?: number
   }
 ) {
@@ -178,21 +178,20 @@ export async function cacheFiles(
       return
     }
 
-    if (!opts?.force) {
-      const state = getCacheState()
-      if (isExactKeyMatch(primaryKey, state)) {
-        core.info(
-          `Cache hit occurred on the primary key ${primaryKey}, not saving cache.`
-        )
-        return
-      }
+    const state = getCacheState()
+    if (isExactKeyMatch(primaryKey, state)) {
+      core.info(
+        `Cache hit occurred on the primary key ${primaryKey}, not saving cache.`
+      )
+      return
     }
 
     try {
-      await cache.saveCache(cachePaths, primaryKey, {
+      const key = primaryKey + '-' + context.sha
+      await cache.saveCache(cachePaths, key, {
         uploadChunkSize: opts?.uploadChunkSize
       })
-      core.info(`Cache saved with key: ${primaryKey}`)
+      core.info(`Cache saved with key: ${key}`)
       core.info(`Cache saved with path: ${cachePaths.join(', ')}`)
     } catch (error: unknown) {
       const typedError = error as Error
